@@ -5,6 +5,7 @@ package auth.v1;
 service AuthService{
 	rpc SignIn (SignInRequest) returns (SignInResponse);
 	rpc SignUp (SignUpRequest) returns (SignUpResponse);
+	rpc RefreshTokens (RefreshTokensRequest) returns (RefreshTokensResponse);
 }
 
 message SignInRequest {
@@ -34,4 +35,13 @@ message User {
 	string id = 1;
 	string name = 2;
 	string email = 3;
+}
+
+message RefreshTokensRequest{
+	string id =1;
+}
+
+message RefreshTokensResponse{
+	string access_token = 1;
+	string refresh_token = 2;
 }
