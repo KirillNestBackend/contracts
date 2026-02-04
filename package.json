@@ -1,6 +1,6 @@
 {
   "name": "@kirill-nest-backend/contracts",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Protobufs definitions for the project",
   "scripts": {
     "generate": "protoc -I ./proto ./proto/*.proto --ts_proto_out=./gen --ts_proto_opt=nestJs=true,package=omit"
