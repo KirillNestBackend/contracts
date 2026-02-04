@@ -7,7 +7,6 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { Timestamp } from "./google/protobuf/timestamp";
 
 export const protobufPackage = "auth.v1";
 
@@ -48,7 +47,8 @@ export interface User {
   name: string;
   email: string;
   isBlocked: boolean;
-  blockedAt: Timestamp | undefined;
+  /** ISO 8601 */
+  blockedAt?: string | undefined;
   blockedReason: string;
 }
 
