@@ -7,6 +7,7 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
+import { Timestamp } from "./google/protobuf/timestamp";
 
 export const protobufPackage = "auth.v1";
 
@@ -33,12 +34,6 @@ export interface SignUpResponse {
   user: User | undefined;
 }
 
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-}
-
 export interface RefreshTokensRequest {
   id: string;
 }
@@ -46,6 +41,32 @@ export interface RefreshTokensRequest {
 export interface RefreshTokensResponse {
   accessToken: string;
   refreshToken: string;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  isBlocked: boolean;
+  blockedAt: Timestamp | undefined;
+  blockedReason: string;
+}
+
+export interface BlockUserRequest {
+  userId: string;
+  reason: string;
+}
+
+export interface BlockUserResponse {
+  user: User | undefined;
+}
+
+export interface UnblockUserRequest {
+  userId: string;
+}
+
+export interface UnblockUserResponse {
+  user: User | undefined;
 }
 
 export const AUTH_V1_PACKAGE_NAME = "auth.v1";
@@ -56,6 +77,10 @@ export interface AuthServiceClient {
   signUp(request: SignUpRequest): Observable<SignUpResponse>;
 
   refreshTokens(request: RefreshTokensRequest): Observable<RefreshTokensResponse>;
+
+  blockUser(request: BlockUserRequest): Observable<BlockUserResponse>;
+
+  unblockUser(request: UnblockUserRequest): Observable<UnblockUserResponse>;
 }
 
 export interface AuthServiceController {
@@ -66,11 +91,17 @@ export interface AuthServiceController {
   refreshTokens(
     request: RefreshTokensRequest,
   ): Promise<RefreshTokensResponse> | Observable<RefreshTokensResponse> | RefreshTokensResponse;
+
+  blockUser(request: BlockUserRequest): Promise<BlockUserResponse> | Observable<BlockUserResponse> | BlockUserResponse;
+
+  unblockUser(
+    request: UnblockUserRequest,
+  ): Promise<UnblockUserResponse> | Observable<UnblockUserResponse> | UnblockUserResponse;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["signIn", "signUp", "refreshTokens"];
+    const grpcMethods: string[] = ["signIn", "signUp", "refreshTokens", "blockUser", "unblockUser"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);

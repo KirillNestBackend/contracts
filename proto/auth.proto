@@ -2,46 +2,70 @@ syntax = "proto3";
 
 package auth.v1;
 
-service AuthService{
-	rpc SignIn (SignInRequest) returns (SignInResponse);
-	rpc SignUp (SignUpRequest) returns (SignUpResponse);
-	rpc RefreshTokens (RefreshTokensRequest) returns (RefreshTokensResponse);
+import "google/protobuf/timestamp.proto";
+
+service AuthService {
+  rpc SignIn (SignInRequest) returns (SignInResponse);
+  rpc SignUp (SignUpRequest) returns (SignUpResponse);
+  rpc RefreshTokens (RefreshTokensRequest) returns (RefreshTokensResponse);
+  rpc BlockUser (BlockUserRequest) returns (BlockUserResponse);
+  rpc UnblockUser (UnblockUserRequest) returns (UnblockUserResponse);
 }
 
 message SignInRequest {
-	string email = 1;
-	string password = 2;
+  string email = 1;
+  string password = 2;
 }
 
-message SignInResponse{
-	string accessToken = 1;
-	string refreshToken = 2;
-	User user = 3;
+message SignInResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  User user = 3;
 }
 
 message SignUpRequest {
-	string name = 1;
-	string email = 2;
-	string password = 3;
+  string name = 1;
+  string email = 2;
+  string password = 3;
 }
 
-message SignUpResponse{
-	string access_token = 1;
-	string refresh_token = 2;
-	User user = 3;
+message SignUpResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  User user = 3;
+}
+
+message RefreshTokensRequest {
+  string id = 1;
+}
+
+message RefreshTokensResponse {
+  string access_token = 1;
+  string refresh_token = 2;
 }
 
 message User {
-	string id = 1;
-	string name = 2;
-	string email = 3;
+  string id = 1;
+  string name = 2;
+  string email = 3;
+  bool is_blocked = 4;
+  google.protobuf.Timestamp blocked_at = 5;
+  string blocked_reason = 6;
 }
 
-message RefreshTokensRequest{
-	string id =1;
+message BlockUserRequest {
+  string user_id = 1;
+  string reason = 2;
 }
 
-message RefreshTokensResponse{
-	string access_token = 1;
-	string refresh_token = 2;
+message BlockUserResponse {
+  User user = 1;
+}
+
+message UnblockUserRequest {
+  string user_id = 1;
+}
+
+message UnblockUserResponse {
+  User user = 1;
 }
