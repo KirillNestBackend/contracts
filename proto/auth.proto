@@ -10,6 +10,7 @@ service AuthService {
   rpc RefreshTokens (RefreshTokensRequest) returns (RefreshTokensResponse);
   rpc BlockUser (BlockUserRequest) returns (BlockUserResponse);
   rpc UnblockUser (UnblockUserRequest) returns (UnblockUserResponse);
+  rpc RevokeUserDeviceToken (RevokeUserDeviceTokenRequest) returns (RevokeUserDeviceTokenResponse);
 }
 
 message SignInRequest {

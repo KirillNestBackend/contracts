@@ -7,6 +7,7 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
+import { Timestamp } from "./google/protobuf/timestamp";
 
 export const protobufPackage = "auth.v1";
 
@@ -47,8 +48,7 @@ export interface User {
   name: string;
   email: string;
   isBlocked: boolean;
-  /** ISO 8601 */
-  blockedAt?: string | undefined;
+  blockedAt: Timestamp | undefined;
   blockedReason: string;
 }
 
@@ -58,7 +58,17 @@ export interface BlockUserRequest {
 }
 
 export interface BlockUserResponse {
-  user: User | undefined;
+  message: string;
+}
+
+export interface RevokeUserDeviceTokenRequest {
+  userId: string;
+  reason: string;
+  deviceId: string;
+}
+
+export interface RevokeUserDeviceTokenResponse {
+  message: string;
 }
 
 export interface UnblockUserRequest {
@@ -81,6 +91,8 @@ export interface AuthServiceClient {
   blockUser(request: BlockUserRequest): Observable<BlockUserResponse>;
 
   unblockUser(request: UnblockUserRequest): Observable<UnblockUserResponse>;
+
+  revokeUserDeviceToken(request: RevokeUserDeviceTokenRequest): Observable<RevokeUserDeviceTokenResponse>;
 }
 
 export interface AuthServiceController {
@@ -97,11 +109,22 @@ export interface AuthServiceController {
   unblockUser(
     request: UnblockUserRequest,
   ): Promise<UnblockUserResponse> | Observable<UnblockUserResponse> | UnblockUserResponse;
+
+  revokeUserDeviceToken(
+    request: RevokeUserDeviceTokenRequest,
+  ): Promise<RevokeUserDeviceTokenResponse> | Observable<RevokeUserDeviceTokenResponse> | RevokeUserDeviceTokenResponse;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["signIn", "signUp", "refreshTokens", "blockUser", "unblockUser"];
+    const grpcMethods: string[] = [
+      "signIn",
+      "signUp",
+      "refreshTokens",
+      "blockUser",
+      "unblockUser",
+      "revokeUserDeviceToken",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);
