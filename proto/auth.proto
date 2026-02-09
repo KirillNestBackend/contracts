@@ -62,14 +62,14 @@ message BlockUserResponse {
   User user = 1;
 }
 
-message BlockUserDeviceRequest{
+message RevokeUserDeviceTokenRequest{
   string user_id = 1;
   string reason = 2;
   string device_id = 3;
 
 }
 
-message BlockUserDeviceResponse {
+message RevokeUserDeviceTokenResponse {
   User user = 1;
 }
 
