@@ -62,6 +62,17 @@ message BlockUserResponse {
   User user = 1;
 }
 
+message BlockUserDeviceRequest{
+  string user_id = 1;
+  string reason = 2;
+  string device_id = 3;
+
+}
+
+message BlockUserDeviceResponse {
+  User user = 1;
+}
+
 message UnblockUserRequest {
   string user_id = 1;
 }
